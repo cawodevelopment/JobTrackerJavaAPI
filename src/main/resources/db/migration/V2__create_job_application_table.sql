@@ -8,7 +8,7 @@ CREATE TABLE job_applications (
     date_applied DATE,
     deadline DATE,
     status VARCHAR(50) NOT NULL,
-    notes VARCHAR(5000)
+    notes VARCHAR(5000),
 
     CONSTRAINT chk_job_type
         CHECK (job_type IN (

@@ -1,5 +1,6 @@
 package com.io.github.cawodevelopment.jobtracker.jobapplication;
 
+import com.io.github.cawodevelopment.jobtracker.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,10 @@ public class JobApplication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @NotBlank
     @Size(max = 2048)

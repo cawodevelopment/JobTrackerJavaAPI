@@ -42,6 +42,12 @@ public class AuthService {
             throw new BadCredentialsException("Invalid email or password");
         }
 
-        return jwtService.generateToken(new com.io.github.cawodevelopment.jobtracker.auth.security.CustomUserDetails(user));
+        Long userId = userRepository.findIdByEmail(request.email())
+                .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+
+        return jwtService.generateToken(
+                new com.io.github.cawodevelopment.jobtracker.auth.security.CustomUserDetails(user),
+                userId
+        );
     }
 }

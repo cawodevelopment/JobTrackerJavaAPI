@@ -25,12 +25,13 @@ public class JwtService {
         this.expirationMillis = expirationMillis;
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails, Long userId) {
         Date issuedAt = new Date();
         Date expiration = new Date(issuedAt.getTime() + expirationMillis);
 
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("userId", userId)
                 .issuedAt(issuedAt)
                 .expiration(expiration)
                 .signWith(signingKey)
@@ -43,7 +44,21 @@ public class JwtService {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        Long userId = extractUserId(token);
+        Long expectedUserId = ((com.io.github.cawodevelopment.jobtracker.auth.security.CustomUserDetails) userDetails).getId();
+        return username.equals(userDetails.getUsername())
+                && userId.equals(expectedUserId)
+                && !isTokenExpired(token);
+    }
+
+    public Long extractUserId(String token) {
+        Object userId = extractClaims(token).get("userId");
+
+        if (userId == null) {
+            throw new io.jsonwebtoken.JwtException("Token is missing userId claim");
+        }
+
+        return Long.valueOf(userId.toString());
     }
 
     private boolean isTokenExpired(String token) {
