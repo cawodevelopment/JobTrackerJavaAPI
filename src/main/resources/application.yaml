@@ -22,3 +22,7 @@ spring:
 logging:
   level:
     org.flywaydb: DEBUG
+
+jwt:
+  secret: ${JWT_SECRET:VGhpc0lzQVN1ZmZpY2llbnRseUxvbmdCYXNlNjRTZWNyZXRGb3JEZXZlbG9wbWVudA==}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
