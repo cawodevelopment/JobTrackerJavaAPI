@@ -7,6 +7,7 @@ import com.io.github.cawodevelopment.jobtracker.user.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class JobApplicationService {
@@ -49,6 +50,7 @@ public class JobApplicationService {
         return jobApplicationMapper.toResponse(savedJobApplication);
     }
 
+    @Transactional
     public JobApplicationResponse updateJobApplicationById(JobApplicationRequest request, Long id, Long userId) {
         JobApplication jobApplication = jobApplicationRepository
                 .findByIdAndUser_Id(id, userId)
@@ -61,6 +63,7 @@ public class JobApplicationService {
         return jobApplicationMapper.toResponse(savedJobApplication);
     }
 
+    @Transactional
     public void deleteJobApplicationById(Long id, Long userId) {
         jobApplicationRepository.deleteByIdAndUser_Id(id, userId);
     }

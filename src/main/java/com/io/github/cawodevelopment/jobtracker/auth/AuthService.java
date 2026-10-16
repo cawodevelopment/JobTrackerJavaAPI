@@ -1,13 +1,14 @@
 package com.io.github.cawodevelopment.jobtracker.auth;
 
-import com.io.github.cawodevelopment.jobtracker.auth.dto.RegisterRequest;
 import com.io.github.cawodevelopment.jobtracker.auth.dto.LoginRequest;
+import com.io.github.cawodevelopment.jobtracker.auth.dto.RegisterRequest;
+import com.io.github.cawodevelopment.jobtracker.auth.security.CustomUserDetails;
 import com.io.github.cawodevelopment.jobtracker.user.User;
 import com.io.github.cawodevelopment.jobtracker.user.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
@@ -31,7 +32,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return "User registered successfully. Make sure to change this endpoint later.";
+        return user.getEmail();
     }
 
     public String login(LoginRequest request) {
@@ -42,12 +43,9 @@ public class AuthService {
             throw new BadCredentialsException("Invalid email or password");
         }
 
-        Long userId = userRepository.findIdByEmail(request.email())
-                .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
-
         return jwtService.generateToken(
-                new com.io.github.cawodevelopment.jobtracker.auth.security.CustomUserDetails(user),
-                userId
+                new CustomUserDetails(user),
+                user.getId()
         );
     }
 }
